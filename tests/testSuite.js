@@ -1,4 +1,4 @@
-// Example test suite for the application
+// test/deployment.test.js
 const request = require('supertest');
 const app = require('../backend/server');
 

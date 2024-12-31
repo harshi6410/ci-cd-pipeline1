@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    sh 'docker build -t $REGISTRY_URL .'
+                    sh 'docker build -t $REGISTRY_URL:$BUILD_NUMBER .'
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
                     withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
                         sh '''
                         echo $DOCKER_TOKEN | docker login -u your-dockerhub-username --password-stdin
-                        docker push $REGISTRY_URL
+                        docker push $REGISTRY_URL:$BUILD_NUMBER
                         '''
                     }
                 }
@@ -71,9 +71,11 @@ pipeline {
     post {
         success {
             echo 'Pipeline executed successfully!'
+            // Optionally, add more steps like sending notifications
         }
         failure {
             echo 'Pipeline failed. Check the logs for more details.'
+            // Optionally, add failure handling steps like sending alerts
         }
     }
 }

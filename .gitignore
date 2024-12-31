@@ -1,3 +1,4 @@
-.env 
-logs/ 
-pipeline/build/ 
+# Ensure the following entries exist only if necessary
+node_modules/
+.env
+logs/

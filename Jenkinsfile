@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     // Ensure dependencies are installed for testing
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     // Run tests defined in the project
-                    sh 'npm test'
+                    bat 'npm test'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    sh 'docker build -t $REGISTRY_URL:$BUILD_NUMBER .'
+                    bat 'docker build -t %REGISTRY_URL% .'
                 }
             }
         }
@@ -46,9 +46,9 @@ pipeline {
                 script {
                     // Login to Docker Hub and push the image
                     withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
-                        sh '''
-                        echo $DOCKER_TOKEN | docker login -u your-dockerhub-username --password-stdin
-                        docker push $REGISTRY_URL:$BUILD_NUMBER
+                        bat '''
+                        echo %DOCKER_TOKEN% | docker login -u your-dockerhub-username --password-stdin
+                        docker push %REGISTRY_URL%
                         '''
                     }
                 }
@@ -59,8 +59,8 @@ pipeline {
             steps {
                 script {
                     // Deploy using kubectl
-                    sh '''
-                    kubectl config use-context $K8S_CLUSTER
+                    bat '''
+                    kubectl config use-context %K8S_CLUSTER%
                     kubectl apply -f k8s/deployment.yaml
                     '''
                 }
@@ -71,11 +71,9 @@ pipeline {
     post {
         success {
             echo 'Pipeline executed successfully!'
-            // Optionally, add more steps like sending notifications
         }
         failure {
             echo 'Pipeline failed. Check the logs for more details.'
-            // Optionally, add failure handling steps like sending alerts
         }
     }
 }
